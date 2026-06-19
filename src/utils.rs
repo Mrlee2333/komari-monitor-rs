@@ -27,8 +27,6 @@ pub fn init_logger(log_level: &LogLevel) {
 #[derive(Debug, Clone)]
 pub struct ConnectionUrls {
     pub basic_info: String,
-    pub exec_callback: String,
-    pub ws_terminal: String,
     pub ws_real_time: String,
 }
 
@@ -36,8 +34,6 @@ impl Display for ConnectionUrls {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "Connection URLs:")?;
         writeln!(f, "  Basic Info URL: {}", self.basic_info)?;
-        writeln!(f, "  Exec Callback URL: {}", self.exec_callback)?;
-        writeln!(f, "  WebSocket Terminal URL: {}", self.ws_terminal)?;
         writeln!(f, "  WebSocket Real-time URL: {}", self.ws_real_time)
     }
 }
@@ -67,14 +63,10 @@ pub fn build_urls(
 
     // 3. Construct final URLs
     let basic_info_url = format!("{http_url_base}/api/clients/uploadBasicInfo?token={token}");
-    let exec_callback_url = format!("{http_url_base}/api/clients/task/result?token={token}");
-    let ws_terminal_url = format!("{ws_url_base}/api/clients/terminal?token={token}");
     let ws_real_time_url = format!("{ws_url_base}/api/clients/report?token={token}");
 
     let connection_urls = ConnectionUrls {
         basic_info: basic_info_url,
-        exec_callback: exec_callback_url,
-        ws_terminal: ws_terminal_url,
         ws_real_time: ws_real_time_url,
     };
 

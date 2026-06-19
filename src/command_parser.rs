@@ -3,7 +3,7 @@ use palc::{Parser, ValueEnum};
 use miniserde::{Deserialize, Serialize};
 use std::fmt::Display;
 use std::path::PathBuf;
-use std::{env, fs};
+use std::env;
 
 #[derive(Parser, Debug, Clone)]
 #[command(
@@ -49,14 +49,6 @@ pub struct Args {
     /// Public IP Provider
     #[arg(long, default_value_t=ip_provider())]
     pub ip_provider: IpProvider,
-
-    /// Enable Terminal (default disabled)
-    #[arg(long, default_value_t = false)]
-    pub terminal: bool,
-
-    /// Custom Terminal Entry
-    #[arg(long, default_value_t = terminal_entry())]
-    pub terminal_entry: String,
 
     /// Set Real-Time Info Upload Interval (ms)
     #[arg(long, default_value_t = 1000)]
@@ -120,20 +112,9 @@ pub struct NetworkConfig {
 
 impl Args {
     pub fn par() -> Self {
-        let mut args = Self::parse();
-        if args.terminal_entry == "default" {
-            args.terminal_entry = {
-                if cfg!(windows) {
-                    "cmd.exe".to_string()
-                } else if fs::exists("/bin/bash").unwrap_or(false) {
-                    "bash".to_string()
-                } else {
-                    "sh".to_string()
-                }
-            };
-        }
-        args
+        Self::parse()
     }
+    
     pub fn network_config(&self) -> NetworkConfig {
         let path = {
             if self.network_save_path.is_none() {
@@ -240,11 +221,6 @@ impl Display for Args {
         writeln!(f, "  Log Level: {:?}", self.log_level)?;
         writeln!(f, "  IP Provider: {:?}", self.ip_provider)?;
 
-        if self.terminal {
-            writeln!(f, "  Terminal Enabled: true")?;
-            writeln!(f, "  Terminal Entry: {}", self.terminal_entry)?;
-        }
-
         writeln!(
             f,
             "  Real-time Info Interval: {} ms",
@@ -283,10 +259,6 @@ impl Display for Args {
 }
 
 // Default Settings
-
-fn terminal_entry() -> String {
-    "default".to_string()
-}
 
 fn ip_provider() -> IpProvider {
     IpProvider::Ipinfo
