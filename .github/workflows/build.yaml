@@ -189,7 +189,7 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ok }}
 
       - name: Build nyquest binary
         run: cargo clean && cross build --target ${{ matrix.platform.target }} --features nyquest-support --profile minimal --jobs 32 --locked
@@ -216,6 +216,6 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ok }}
 
   
